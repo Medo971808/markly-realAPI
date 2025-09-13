@@ -26,7 +26,7 @@ const clothesCategories: string[] = ['T-Shirt', 'Long-Sleeve T-Shirt', 'Raglan S
             <section class="border-t-[5px] border-b-[5px] border-dashed border-[#262626] py-5 flex justify-center">
                 <section v-for="value in clothesCategories" class="flex items-center">
                     <nuxt-img src="/images/icons/image.png" alt="Clothes Categoy" class="w-12" />
-                    <p class="mx-2 text-[#333333] uppercase text-lg">{{ value }}</p>
+                    <p class="mx-3 text-[#81C784] uppercase text-xl">{{ value }}</p>
                 </section>
             </section>
         </section>
