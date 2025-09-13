@@ -73,7 +73,7 @@ const handlePhoto = () => {
         <img :src="user.photoURL || '/face.jpg'" :alt="user.displayName || ''" v-if="user" loading="eager" class="rounded-full w-12 h-12 cursor-pointer"
           @click="handlePhoto">
         <NuxtLink v-else to="/auth/login"
-          class="bg-red-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-[#383838] transition duration-300">
+          class="bg-red-700 text-white text-base font-semibold px-4 py-2 rounded-lg hover:bg-[#383838] transition-colors">
           Log In
         </NuxtLink>
       </section>
