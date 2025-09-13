@@ -20,7 +20,7 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          async: true,
+          defer: true,
           src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6477547953326490",
           crossorigin: "anonymous"
         }
@@ -51,5 +51,15 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: 'netlify-static'
+  },
+  vite: {
+    build: {
+      minify: "terser",
+      terserOptions: {
+        compress: true,
+        mangle: true
+      },
+      target: "esnext"
+    }
   }
 })
