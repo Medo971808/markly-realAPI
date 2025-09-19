@@ -20,7 +20,7 @@ const handleTitle = (title: string) => {
 
 const emit = defineEmits(["add-to-cart"])
 
-const { user } = useLogin()
+const { user } = useProfile()
 
 </script>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { user } = useLogin()
+const { user } = useProfile()
 
 const cart = useState<any[]>("cart", () => [])
 

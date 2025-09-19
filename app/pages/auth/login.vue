@@ -1,24 +1,26 @@
 <script setup lang="ts">
+import { GoogleLogin } from 'vue3-google-login'
 useSeoMeta({
     title: 'Log in',
 })
 definePageMeta({
     layout: 'auth'
 })
-const { login, loginWithGoogle, error, loading, resetPassword } = useLogin()
+const { login, error, loading, forgotPassword, signInWithGoogle } = useAuth()
 const email = ref('')
 const password = ref('')
 const forgetPassword = ref('')
 
 const handleLogin = async () => {
-    const loggedInUser = await login(email.value, password.value)
-    if (loggedInUser) navigateTo("/")
+    await login(email.value, password.value)
+
 }
 
-const handleGoogleLogin = async () => {
-    const loggedInUserWithGoogle = await loginWithGoogle()
-    if (loggedInUserWithGoogle) navigateTo("/")
-}
+// const handleGoogleLogin = async () => {
+//     loading.value = true
+//     await signInWithGoogle()
+//     loading.value = false
+// }
 
 const handleForgetPassword = async () => {
     if (!email.value) {
@@ -26,10 +28,7 @@ const handleForgetPassword = async () => {
         return
     }
 
-    const success = await resetPassword(email.value)
-    if (success) {
-        forgetPassword.value = 'Check your email to reset your password'
-    }
+    await forgotPassword(email.value)
 }
 </script>
 
@@ -54,17 +53,20 @@ const handleForgetPassword = async () => {
             </button>
         </section>
         <p class="text-center mb-2">or</p>
-        <button :disabled="loading"
-            class="flex items-center justify-center gap-2 px-4 py-2 bg-[#1A1A1A] border rounded-lg shadow w-full hover:bg-gray-800 transition"
-            @click="handleGoogleLogin">
-            <FontAwesomeIcon :icon="['fab', 'google']" class="text-2xl transition-colors" />
-            Login with Google
-        </button>
+        <div class="flex flex-col items-center justify-center">
+            <ClientOnly>
+                <GoogleLogin :callback="signInWithGoogle" :buttonConfig="{ text: 'signin_with', width: 300 }" />
+
+                <div v-if="loading" class="mt-2 text-gray-500">Signing in...</div>
+                <div v-if="error" class="mt-2 text-red-500">{{ error }}</div>
+            </ClientOnly>
+        </div>
         <section class="flex justify-center items-center mt-2 ">
             <p class="text-center">Not have an account yet?</p>
             <NuxtLink to="/auth/signup" class=" underline ml-3">Sign Up</NuxtLink>
         </section>
         <p v-if="error" class="text-red-500 mt-3">{{ error }}</p>
         <p v-else class="text-red-500 mt-3">{{ forgetPassword }}</p>
+        <p>{{ loading }}</p>
     </section>
 </template>

@@ -9,10 +9,14 @@ const linkClass = (path: string) => {
     'border-[3px] bg-black border-[#262626]' : ''
 }
 
-const { user } = useLogin()
+const { user, getUser } = useProfile()
+onMounted(async () => {
+  await getUser()
+
+})
 
 const handlePhoto = () => {
-  if (user.value) navigateTo(`/user/${user.value.uid}`)
+  if (user.value) navigateTo(`/profile`)
   menuOpen.value = false
 }
 </script>
@@ -70,12 +74,13 @@ const handlePhoto = () => {
           class="cursor-pointer bg-zinc-900 text-white px-3 py-1 rounded transition duration-300 hover:bg-[#383838]"
           :to="user ? '/dashboard' : '/auth/login'">Dashboard
         </NuxtLink>
-        <img :src="user.photoURL || '/face.jpg'" :alt="user.displayName || ''" v-if="user" loading="eager" class="rounded-full w-12 h-12 cursor-pointer"
+        <img :src="user.photoURL || '/face.jpg'" :alt="user.username || ''" v-if="user" loading="eager" class="rounded-full w-12 h-12 cursor-pointer"
           @click="handlePhoto">
         <NuxtLink v-else to="/auth/login"
           class="bg-red-700 text-white text-base font-semibold px-4 py-2 rounded-lg hover:bg-[#383838] transition-colors">
           Log In
         </NuxtLink>
+        <button @click="getUser">ww</button>
       </section>
     </section>
     <transition name="slide">

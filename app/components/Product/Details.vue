@@ -26,7 +26,7 @@ const ratingStars = computed(() => {
   return Math.round(rate ?? 0)
 })
 
-const { user } = useLogin()
+const { user } = useProfile()
 </script>
 
 <template>

@@ -1,2 +1,8 @@
-User-Agent: *
-Disallow:
+# Allow Google AdsBot to index the login page but no-admin pages
+User-agent: AdsBot-Google-Mobile
+Disallow: /dashboard
+Allow: /*
+
+User-agent: AdsBot-Google-Mobile-Apps
+Disallow: /dashboard
+Allow: /*

@@ -3,6 +3,10 @@ useSeoMeta({
   title: 'Markly',
 })
 
+definePageMeta({
+  prerender: false
+})
+
 const currentCategory = useState('currentCategory', () => '')
 const { pending, error, filteredProducts } = useProducts()
 

@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-08-22',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', '@nuxt/image', '@nuxtjs/seo'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxt/image', '@nuxtjs/robots'],
   image: {
     domains: ['fakestoreapi.com'],
   },
@@ -20,6 +20,13 @@ export default defineNuxtConfig({
       ],
       meta: [
         { name: 'description', content: 'Markly is a platform that helps you manage your projects efficiently with modern tools and simple UI.' }
+      ],
+      script: [
+        {
+          src: "https://accounts.google.com/gsi/client",
+          async: true,
+          defer: true
+        }
       ]
     }
   },
@@ -29,17 +36,8 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
-    firebaseClientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    firebasePrivateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
     public: {
       stripePublicKey: process.env.STRIPE_PUBLIC_KEY,
-
-      firebaseApikey: process.env.FIREBASE_API_KEY,
-      firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      firebaseProjectID: process.env.FIREBASE_PROJECT_ID,
-      firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      firebaseMessagingSenderID: process.env.FIREBASE_MESSAGING_SENDER_ID,
-      firebaseAppID: process.env.FIREBASE_APP_ID,
     },
   },
   nitro: {
@@ -54,5 +52,16 @@ export default defineNuxtConfig({
       },
       target: "esnext"
     }
-  }
+  },
+  robots: {
+    groups: [
+      {
+        userAgent: ['AdsBot-Google-Mobile', 'AdsBot-Google-Mobile-Apps'],
+        disallow: ['/dashboard'],
+        allow: ['/*'],
+        comment: 'Allow Google AdsBot to index the login page but no-admin pages'
+      }
+    ]
+  },
+  
 })
