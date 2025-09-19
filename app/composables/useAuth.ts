@@ -136,14 +136,13 @@ export const useAuth = () => {
   const logout = async () => {
     const refreshToken = localStorage.getItem('refreshToken')
     try {
-        const result = await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/logout', {
+        await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/logout', {
           method: 'POST',
           body: { refreshToken },
           headers: {
             Authorization: `Bearer ${accessToken.value}`
           }
         })
-        console.log(result)
         accessToken.value = null
         localStorage.removeItem('refreshToken')
       } catch (err) {

@@ -21,8 +21,6 @@ const handleLogin = async () => {
     navigateTo('/profile')
 }
 
-console.log(user.value)
-
 const handleGoogleLogin = async (response: any) => {
     await signInWithGoogle(response)
     await getUser()
