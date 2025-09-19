@@ -100,7 +100,10 @@ export const useAuth = () => {
           method: 'POST',
           body: {
             email,
-            clientUrl: 'http://localhost:3000/reset-password'
+            clientUrl: [
+              'http://localhost:3000/reset-password',
+              'https://markly-realapi.netlify.app'
+            ]
           },
         }
       )
