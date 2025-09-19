@@ -9,14 +9,10 @@ const linkClass = (path: string) => {
     'border-[3px] bg-black border-[#262626]' : ''
 }
 
-const { user, getUser } = useProfile()
-onMounted(async () => {
-  await getUser()
-
-})
+const { user } = useProfile()
 
 const handlePhoto = () => {
-  if (user.value) navigateTo(`/profile`)
+  navigateTo(`/profile`)
   menuOpen.value = false
 }
 </script>
@@ -80,7 +76,6 @@ const handlePhoto = () => {
           class="bg-red-700 text-white text-base font-semibold px-4 py-2 rounded-lg hover:bg-[#383838] transition-colors">
           Log In
         </NuxtLink>
-        <button @click="getUser">ww</button>
       </section>
     </section>
     <transition name="slide">

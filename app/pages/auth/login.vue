@@ -7,27 +7,34 @@ definePageMeta({
     layout: 'auth'
 })
 const { login, error, loading, forgotPassword, signInWithGoogle } = useAuth()
+const { user, getUser } = useProfile()
+
+// if(user.value) navigateTo('/profile')
+
 const email = ref('')
 const password = ref('')
 const forgetPassword = ref('')
 
 const handleLogin = async () => {
     await login(email.value, password.value)
-
+    await getUser()
+    navigateTo('/profile')
 }
 
-// const handleGoogleLogin = async () => {
-//     loading.value = true
-//     await signInWithGoogle()
-//     loading.value = false
-// }
+console.log(user.value)
+
+const handleGoogleLogin = async (response: any) => {
+    await signInWithGoogle(response)
+    await getUser()
+    navigateTo('/profile')
+}
 
 const handleForgetPassword = async () => {
     if (!email.value) {
         forgetPassword.value = 'Please enter your email first'
         return
     }
-
+    forgetPassword.value = 'Process happend successfully, Please check your Email'
     await forgotPassword(email.value)
 }
 </script>
@@ -53,20 +60,19 @@ const handleForgetPassword = async () => {
             </button>
         </section>
         <p class="text-center mb-2">or</p>
-        <div class="flex flex-col items-center justify-center">
+        <section class="flex flex-col items-center justify-center">
             <ClientOnly>
-                <GoogleLogin :callback="signInWithGoogle" :buttonConfig="{ text: 'signin_with', width: 300 }" />
-
-                <div v-if="loading" class="mt-2 text-gray-500">Signing in...</div>
-                <div v-if="error" class="mt-2 text-red-500">{{ error }}</div>
+                <GoogleLogin :callback="handleGoogleLogin"
+                    :buttonConfig="{ text: 'signin_with', width: 300 }" />
+                <p v-if="loading" class="mt-2 text-gray-500">Signing in...</p>
+                <p v-if="error" class="mt-2 text-red-500">{{ error }}</p>
             </ClientOnly>
-        </div>
+        </section>
         <section class="flex justify-center items-center mt-2 ">
             <p class="text-center">Not have an account yet?</p>
             <NuxtLink to="/auth/signup" class=" underline ml-3">Sign Up</NuxtLink>
         </section>
-        <p v-if="error" class="text-red-500 mt-3">{{ error }}</p>
-        <p v-else class="text-red-500 mt-3">{{ forgetPassword }}</p>
-        <p>{{ loading }}</p>
+        <p class="text-red-500 mt-3">{{ error }}</p>
+        <p class="text-green-500 mt-3">{{ forgetPassword }}</p>
     </section>
 </template>

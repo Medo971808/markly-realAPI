@@ -27,6 +27,7 @@ const updateNameAndPhoto = async () => {
 
 const handleLogout = async () => {
     await logout()
+    user.value = null
     navigateTo('/auth/login')
 }
 </script>
@@ -47,7 +48,7 @@ const handleLogout = async () => {
                         class="w-32 h-32 rounded-full border-4 border-green-500 shadow-md object-cover ring-offset-2" />
                 </section>
                 <h1 class="text-2xl font-bold tracking-wide mb-1 text-white">{{ user.firstName + ' ' + user.lastName }}</h1>
-                <p class="text-gray-400 mb-6 text-sm">{{ user.username }}</p>
+                <p class="text-gray-400 mb-6 text-sm">{{ user.userName }}</p>
                 <p class="text-gray-400 mb-6 text-sm">{{ user.email }}</p>
                 <section class="flex flex-col gap-3">
                     <NuxtLink to="/checkout"

@@ -56,8 +56,8 @@ export const useAuth = () => {
   const signInWithGoogle = async (response: any) => {
     loading.value = true
     error.value = ''
+    const idToken = response.credential
     try {
-      const idToken = response.credential
       const { accessToken: at, refreshToken } = await $fetch<AuthResponse>(
         'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/signin-google', {
         method: 'POST',
