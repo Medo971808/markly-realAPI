@@ -106,7 +106,7 @@ export const useAuth = () => {
       )
       return result
     } catch (err: any) {
-      error.value = err?.data?.message || 'Cannot send confirm link, Please check your email and try again'
+      error.value = err.response._data || 'Email is invalid'
     } finally {
       loading.value = false
     }

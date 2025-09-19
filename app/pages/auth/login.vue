@@ -33,7 +33,6 @@ const handleForgetPassword = async () => {
         return
     }
     const result = await forgotPassword(email.value)
-    console.log(result)
     forgetPassword.value = result as string
 }
 </script>
@@ -64,14 +63,13 @@ const handleForgetPassword = async () => {
                 <GoogleLogin :callback="handleGoogleLogin"
                     :buttonConfig="{ text: 'signin_with', width: 300 }" />
                 <p v-if="loading" class="mt-2 text-gray-500">Signing in...</p>
-                <p v-if="error" class="mt-2 text-red-500">{{ error }}</p>
             </ClientOnly>
         </section>
         <section class="flex justify-center items-center mt-2 ">
             <p class="text-center">Not have an account yet?</p>
             <NuxtLink to="/auth/signup" class=" underline ml-3">Sign Up</NuxtLink>
         </section>
-        <p class="text-red-500 mt-3">{{ error }}</p>
-        <p class="text-green-500 mt-3">{{ forgetPassword }}</p>
+        <p v-if="error" class="text-red-500 mt-3">{{ error }}</p>
+        <p v-else class="text-green-500 mt-3">{{ forgetPassword }}</p>
     </section>
 </template>
