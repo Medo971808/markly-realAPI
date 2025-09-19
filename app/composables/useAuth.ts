@@ -95,7 +95,7 @@ export const useAuth = () => {
     loading.value = true
     error.value = ''
     try {
-      await $fetch(
+      const result = await $fetch(
         'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/forgot-password', {
           method: 'POST',
           body: {
@@ -104,6 +104,7 @@ export const useAuth = () => {
           },
         }
       )
+      return result
     } catch (err: any) {
       error.value = err?.data?.message || 'Cannot send confirm link, Please check your email and try again'
     } finally {

@@ -32,8 +32,9 @@ const handleForgetPassword = async () => {
         forgetPassword.value = 'Please enter your email first'
         return
     }
-    forgetPassword.value = 'Process happend successfully, Please check your Email'
-    await forgotPassword(email.value)
+    const result = await forgotPassword(email.value)
+    console.log(result)
+    forgetPassword.value = result as string
 }
 </script>
 
