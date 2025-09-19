@@ -17,7 +17,6 @@ export const useProfile = () => {
           },
         }
       )
-      console.log(user.value)
     } catch (err: any) {
       if (err?.status === 401) {
         const newAccessToken = await refresh()

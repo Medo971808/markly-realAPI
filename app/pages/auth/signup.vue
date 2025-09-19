@@ -13,19 +13,21 @@ const email = ref('')
 const password = ref('')
 
 const { error, register, loading } = useAuth()
+const { getUser } = useProfile()
 
 const handleEmailSignup = async () => {
   if (!fName.value || !lName.value || !uname.value || !email.value || !password.value) {
     alert('Please fill all fields')
     return
   }
-
   await register(fName.value, lName.value, uname.value, email.value, password.value)
   fName.value = ''
   lName.value = ''
   uname.value = ''
   email.value = ''
   password.value = ''
+  await getUser()
+  navigateTo('/profile')
 }
 
 // const handleGoogleSignup = async () => {

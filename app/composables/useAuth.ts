@@ -147,7 +147,6 @@ export const useAuth = () => {
         localStorage.removeItem('refreshToken')
       } catch (err) {
         console.error('Something Wrong', err)
-        console.log(refreshToken, accessToken.value)
       }
   }
 

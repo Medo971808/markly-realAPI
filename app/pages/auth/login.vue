@@ -9,7 +9,7 @@ definePageMeta({
 const { login, error, loading, forgotPassword, signInWithGoogle } = useAuth()
 const { user, getUser } = useProfile()
 
-// if(user.value) navigateTo('/profile')
+if(user.value) navigateTo('/profile')
 
 const email = ref('')
 const password = ref('')
