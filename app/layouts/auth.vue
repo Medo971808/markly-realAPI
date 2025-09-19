@@ -1,3 +1,14 @@
+<script setup lang="ts">
+import { useAuthStore } from '~/store/auth'
+
+const { refresh } = useAuth()
+const { getUser } = useProfile()
+const authStore = useAuthStore()
+
+// if (authStore.accessToken) {
+//     await getUser()
+// }
+</script>
 <template>
     <ClientOnly>
         <Nav />

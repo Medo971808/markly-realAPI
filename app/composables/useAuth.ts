@@ -1,11 +1,9 @@
+import { useAuthStore } from '../store/auth'
+
 export const useAuth = () => {
-  const accessToken = useState<string | null>('accessToken', () => null)
   const loading = ref(false)
   const error = ref('')
-
-  interface RefreshResponse {
-    accessToken: string
-  }
+  const authStore = useAuthStore()
 
   interface AuthResponse {
     accessToken: string
@@ -16,14 +14,13 @@ export const useAuth = () => {
     loading.value = true
     error.value = ''
     try {
-      const { accessToken: at, refreshToken } = await $fetch<AuthResponse>(
+      const user = await $fetch<AuthResponse>(
         'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/login', {
           method: 'POST',
           body: { email, password },
         }
       )
-      accessToken.value = at
-      localStorage.setItem('refreshToken', refreshToken)
+      authStore.setTokens(user.accessToken, user.refreshToken, user)
     } catch (err: any) {
       error.value = err?.data?.message || 'Login failed'
     } finally {
@@ -37,14 +34,13 @@ export const useAuth = () => {
     try {
       const body = { firstName: fName, lastName: lName, username: uName, email, password }
 
-      const { accessToken: at, refreshToken } = await $fetch<AuthResponse>(
+      const user = await $fetch<AuthResponse>(
         'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/register', {
           method: 'POST',
           body,
         }
       )
-      accessToken.value = at
-      localStorage.setItem('refreshToken', refreshToken)
+      authStore.setTokens(user.accessToken, user.refreshToken, user)
     } catch (err: any) {
       error.value = err?.data?.message || 'Register failed'
     } finally {
@@ -58,13 +54,12 @@ export const useAuth = () => {
     error.value = ''
     const idToken = response.credential
     try {
-      const { accessToken: at, refreshToken } = await $fetch<AuthResponse>(
+      const user = await $fetch<AuthResponse>(
         'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/signin-google', {
         method: 'POST',
         body: { idToken }
       })
-      accessToken.value = at
-      localStorage.setItem('refreshToken', refreshToken)
+      authStore.setTokens(user.accessToken, user.refreshToken, user)
     } catch (err: any) {
       error.value = err.message || 'Something went wrong'
     } finally {
@@ -72,22 +67,20 @@ export const useAuth = () => {
     }
   }
 
+  authStore.loadRefreshToken()
   const refresh = async () => {
-    const rt = localStorage.getItem('refreshToken')
+    const rt = authStore.refreshToken
+    
     if (!rt) return null
     try {
-      const { accessToken: at } = await $fetch<RefreshResponse>(
-        'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/refresh-token', {
-          method: 'POST',
-          body: { refreshToken: rt },
-        }
+      const { accessToken: at, refreshToken } = await $fetch<AuthResponse>(
+        'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/refresh-token',
+        { method: 'POST', body: { refreshToken: rt } }
       )
-      accessToken.value = at
-      return at
+      authStore.refreshTokens(at, refreshToken)
     } catch (err: any) {
       error.value = 'Session expired'
-      logout()
-      return null
+      await logout()
     }
   }
 
@@ -135,21 +128,20 @@ export const useAuth = () => {
   }
 
   const logout = async () => {
-    const refreshToken = localStorage.getItem('refreshToken')
+    const refreshToken = authStore.refreshToken
     try {
         await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/logout', {
           method: 'POST',
           body: { refreshToken },
           headers: {
-            Authorization: `Bearer ${accessToken.value}`
+            Authorization: `Bearer ${authStore.accessToken}`
           }
         })
-        accessToken.value = null
-        localStorage.removeItem('refreshToken')
+        authStore.clearTokens()
       } catch (err) {
         console.error('Something Wrong', err)
       }
   }
 
-  return { accessToken, loading, error, login, register, refresh, logout, forgotPassword, resetPassword, signInWithGoogle }
+  return { loading, error, login, register, refresh, logout, forgotPassword, resetPassword, signInWithGoogle }
 }

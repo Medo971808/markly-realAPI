@@ -9,7 +9,9 @@ definePageMeta({
 const { login, error, loading, forgotPassword, signInWithGoogle } = useAuth()
 const { user, getUser } = useProfile()
 
-if(user.value) navigateTo('/profile')
+watchEffect(() => {
+    if (user.value) navigateTo('/profile')
+})
 
 const email = ref('')
 const password = ref('')
@@ -60,14 +62,16 @@ const handleForgetPassword = async () => {
         <p class="text-center mb-2">or</p>
         <section class="flex flex-col items-center justify-center">
             <ClientOnly>
-                <GoogleLogin :callback="handleGoogleLogin"
-                    :buttonConfig="{ text: 'signin_with', width: 300 }" />
-                <p v-if="loading" class="mt-2 text-gray-500">Signing in...</p>
+                <GoogleLogin :callback="handleGoogleLogin" :buttonConfig="{ text: 'signin_with', width: 300 }" />
             </ClientOnly>
         </section>
         <section class="flex justify-center items-center mt-2 ">
             <p class="text-center">Not have an account yet?</p>
             <NuxtLink to="/auth/signup" class=" underline ml-3">Sign Up</NuxtLink>
+        </section>
+        <section v-if="loading" class="flex flex-col justify-center items-center py-5">
+            <section class="w-16 h-16 border-4 border-dashed rounded-full border-[#AE9B84] animate-spin"></section>
+            <p class="mt-5 text-xl text-[#AE9B84] font-semibold">Loading...</p>
         </section>
         <p v-if="error" class="text-red-500 mt-3">{{ error }}</p>
         <p v-else class="text-green-500 mt-3">{{ forgetPassword }}</p>

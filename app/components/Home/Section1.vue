@@ -1,7 +1,7 @@
 <template>
     <section class="text-white px-6 py-5 h-full mt-20">
         <section class="relative">
-            <NuxtImg src="/images/Image.png" alt="Hero image" class="h-auto w-full rounded-t-3xl" loading="eager"
+            <NuxtImg src="/images/Image.png" alt="Hero image" class="h-auto w-full rounded-t-3xl" loading="lazy"
                 decoding="async" fetchpriority="high" />
             <section class="lg:flex justify-between text-[#B3B3B2]">
                 <section

@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-08-22',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', '@nuxt/image', '@nuxtjs/robots'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxt/image', '@nuxtjs/robots', '@pinia/nuxt'],
   image: {
     domains: ['fakestoreapi.com'],
   },

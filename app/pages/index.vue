@@ -13,6 +13,7 @@ const { pending, error, filteredProducts } = useProducts()
 const displayedProducts = computed(() => filteredProducts(currentCategory.value).value ?? [])
 
 const { addToCart } = useCart()
+
 </script>
 
 <template>
