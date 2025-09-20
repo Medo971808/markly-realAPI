@@ -3,26 +3,80 @@ useSeoMeta({
     title: 'User',
 })
 
+import { Cropper } from "vue-advanced-cropper"
+import "vue-advanced-cropper/dist/style.css"
 
 const { user } = useProfile()
-const { logout } = useAuth()
+const { uploadImage, logout } = useAuth()
 const editButton = ref(false)
 const newFirstName = ref('')
 const newLastName = ref('')
-// const newPhoto = ref('')
+const newUserName = ref('')
 
-if(!user.value) navigateTo('/')
+if (!user.value) navigateTo('/auth/login')
 
 const updateNameAndPhoto = async () => {
     if (!user.value) return
 
     const firstName = newFirstName.value.trim() !== "" ? newFirstName.value.trim() : null
     const lastName = newLastName.value.trim() !== "" ? newLastName.value.trim() : null
+    const userName = newUserName.value.trim() !== "" ? newUserName.value.trim() : null
 
-    user.value.firstName = firstName
-    user.value.lastName = lastName
+    user.value.firstName = firstName || user.value.firstName
+    user.value.lastName = lastName || user.value.lastName
+    user.value.username = userName || user.value.username
 
     editButton.value = false
+}
+
+const imageSrc = ref<string | null>(null)
+const cropData = ref<string | null>(null)
+
+const base64ToFile = (base64: string, filename: string): File => {
+    const arr: string[] = base64.split(",")
+    const mimeMatch: any = arr[0]?.match(/:(.*?);/)
+    if (!mimeMatch) throw new Error("Invalid base64 string: cannot extract MIME type.")
+    const mime: string = mimeMatch[1]
+    const bstr: string = atob(arr[1] || '')
+    let n: number = bstr.length
+    const u8arr = new Uint8Array(n)
+
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+    }
+    return new File([u8arr], filename, { type: mime })
+}
+
+const onFileChange = (e: Event) => {
+    const target = e.target as HTMLInputElement
+    if (!target.files || target.files.length === 0) return
+
+    const file: any = target.files[0]
+    const reader = new FileReader()
+
+    reader.onload = (ev: ProgressEvent<FileReader>) => {
+        if (typeof ev.target?.result === "string") {
+            imageSrc.value = ev.target.result
+        }
+    }
+    reader.readAsDataURL(file)
+}
+
+const onCropChange = ({ canvas }: { canvas: HTMLCanvasElement | null }) => {
+    if (canvas) cropData.value = canvas.toDataURL("image/jpeg")
+}
+
+
+const saveCrop = async () => {
+    if (cropData.value) {
+        const file = base64ToFile(cropData.value, `${user.value.username}.png`)
+        user.value = await uploadImage(file)
+    }
+    imageSrc.value = null
+}
+
+const cancelCrop = () => {
+    imageSrc.value = null
 }
 
 const handleLogout = async () => {
@@ -33,23 +87,41 @@ const handleLogout = async () => {
 </script>
 
 <template>
-    <section v-if="!user" class="text-white px-6 pb-5 pt-20">
-        <section class="w-full flex h-16 mt-5">
-            <NuxtLink to="/auth/login"
-                class="w-full flex items-center justify-center bg-[#DB4444] h-full rounded-xl hover:bg-[#383838] transition duration-300">
-                Log in</NuxtLink>
-        </section>
-    </section>
-    <section v-else class="min-h-screen flex items-center justify-center p-6 pt-20 md:pt-0">
+    <section v-if="user" class="min-h-screen flex items-center justify-center p-6 pt-20 md:pt-0">
         <section class="w-full max-w-4xl grid md:grid-cols-3 gap-6">
             <section class="md:col-span-1 bg-[#1A1A1A] rounded-2xl shadow-xl p-8 text-center relative overflow-hidden">
-                <section class="flex justify-center mb-6">
-                    <img :src="user?.photoURL || '/face.jpg'" alt="Profile"
-                        class="w-32 h-32 rounded-full border-4 border-green-500 shadow-md object-cover ring-offset-2" />
+                <section class="flex justify-center items-center">
+                    <section class="flex justify-center mb-6 relative">
+                        <img :src="user.imageUrl || '/face.jpeg'" alt="Profile"
+                            class="w-32 h-32 rounded-full border-4 border-green-500 shadow-md object-cover">
+                        <input id="upload" type="file" accept="image/*" class="hidden" @change="onFileChange">
+                        <label for="upload"
+                            class="absolute bottom-0 right-1 bg-purple-600 p-2 rounded-full shadow cursor-pointer hover:bg-purple-700">
+                            ✏️
+                        </label>
+                        <section v-if="imageSrc"
+                            class="fixed inset-0 bg-black backdrop-blur-sm flex items-center justify-center z-50">
+                            <section class="bg-white rounded-lg shadow-lg w-11/12 h-5/6 flex flex-col">
+                                <cropper :src="imageSrc || '/face.jpeg'" :stencil-props="{ aspectRatio: 1 }" class="flex-1 bg-red-200 h-[80%]"
+                                    @change="onCropChange" />
+                                <section class="p-4 flex justify-end gap-2 border-t">
+                                    <button class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" @click="cancelCrop">
+                                        Cancel
+                                    </button>
+                                    <button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                        @click="saveCrop">
+                                        Save
+                                    </button>
+                                </section>
+                            </section>
+                        </section>
+                    </section>
                 </section>
-                <h1 class="text-2xl font-bold tracking-wide mb-1 text-white">{{ user.firstName + ' ' + user.lastName }}</h1>
+                <h1 class="text-2xl font-bold tracking-wide mb-1 text-white">{{ user.firstName + ' ' + user.lastName }}
+                </h1>
                 <p class="text-gray-400 mb-6 text-sm">{{ user.userName }}</p>
                 <p class="text-gray-400 mb-6 text-sm">{{ user.email }}</p>
+
                 <section class="flex flex-col gap-3">
                     <NuxtLink to="/checkout"
                         class="bg-blue-600 hover:bg-blue-700 py-3 rounded-xl transition font-semibold shadow-md text-white">
@@ -67,14 +139,16 @@ const handleLogout = async () => {
                     <p class="text-gray-400 text-sm mb-6">
                         Update your profile information and manage your account settings.
                     </p>
-                    <section v-if="editButton"
-                        class="flex items-center gap-3 bg-[#1A1A1A] rounded-xl shadow-md mt-4 mb-8 md:mb-0">
+                    <section v-if="editButton" class="bg-[#1A1A1A] rounded-xl shadow-md mt-4 mb-8 md:mb-0">
                         <input type="text" v-model="newFirstName"
-                            class="flex-1 h-10 bg-gray-900 text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Enter new name" />
+                            class="h-10 block mb-3 w-full bg-gray-900 text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Enter new first name" />
                         <input type="text" v-model="newLastName"
-                            class="flex-1 h-10 bg-gray-900 text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            class="h-10 block mb-3 w-full bg-gray-900 text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Enter new last name" />
+                        <input type="text" v-model="newUserName"
+                            class="h-10 block mb-3 w-full bg-gray-900 text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Enter new username" />
                         <button @click="updateNameAndPhoto"
                             class="px-5 h-10 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-md transition">
                             Done

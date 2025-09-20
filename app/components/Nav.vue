@@ -70,20 +70,20 @@ const handlePhoto = () => {
           class="cursor-pointer bg-zinc-900 text-white px-3 py-1 rounded transition duration-300 hover:bg-[#383838]"
           :to="user ? '/dashboard' : '/auth/login'">Dashboard
         </NuxtLink>
-        <img :src="user.photoURL || '/face.jpg'" :alt="user.username || ''" v-if="user" loading="eager" class="rounded-full w-12 h-12 cursor-pointer"
+        <img :src="user.imageUrl || '/face.jpeg'" :alt="user.username || ''" v-if="user" loading="eager" class="rounded-full w-12 h-12 cursor-pointer"
           @click="handlePhoto">
         <NuxtLink v-else to="/auth/login"
-          class="bg-red-700 text-white text-base font-semibold px-4 py-2 rounded-lg hover:bg-[#383838] transition-colors">
+          class="bg-purple-700 text-white text-base font-semibold px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
           Log In
         </NuxtLink>
       </section>
     </section>
     <transition name="slide">
       <section v-if="menuOpen" class="flex flex-col mt-4 space-y-2 md:hidden text-white">
-        <img :src="user.photoURL || '/face.jpg'" alt="" v-if="user" class="rounded-full w-12 h-12 cursor-pointer"
+        <img :src="user.imageUrl || '/face.jpeg'" :alt="user.username" v-if="user" class="rounded-full w-12 h-12 cursor-pointer"
           @click="handlePhoto">
         <NuxtLink @click="menuOpen = false" to="/auth/login"
-          class="cursor-pointer bg-[#DB4444] p-2 flex items-center transition duration-300 hover:bg-[#383838]"
+          class="cursor-pointer bg-purple-700 p-2 w-24 flex justify-center items-center transition duration-300 hover:bg-purple-600 border-none rounded-lg"
           :class="linkClass('/auth/login')" v-else>Log In</NuxtLink>
         <NuxtLink class="cursor-pointer px-3 py-1 rounded transition duration-300 hover:bg-[#383838]" to="/"
           :class="linkClass('/')" @click="menuOpen = false">Home</NuxtLink>

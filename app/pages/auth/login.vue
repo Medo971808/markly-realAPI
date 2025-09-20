@@ -51,7 +51,7 @@ const handleForgetPassword = async () => {
             placeholder="Password" />
 
         <section class="flex justify-between items-center mb-5">
-            <button class="bg-[#DB4444] w-28 h-12 rounded-lg hover:bg-[#DB5555]" @click="handleLogin"
+            <button class="bg-purple-700 w-28 h-12 rounded-lg hover:bg-purple-600" @click="handleLogin"
                 :disabled="loading">
                 Log In
             </button>

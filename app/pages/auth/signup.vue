@@ -26,8 +26,11 @@ const handleEmailSignup = async () => {
   uname.value = ''
   email.value = ''
   password.value = ''
-  await getUser()
-  navigateTo('/profile')
+
+  if(!error.value) {
+      navigateTo('/profile')
+      await getUser()
+  }
 }
 
 // const handleGoogleSignup = async () => {
