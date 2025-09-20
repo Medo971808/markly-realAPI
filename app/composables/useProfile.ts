@@ -38,8 +38,8 @@ export const useProfile = () => {
   const uploadImage = async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-
     try {
+      loading.value = true
       const res = await fetch(
         "https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/update-image",
         {
@@ -54,13 +54,11 @@ export const useProfile = () => {
       return user.value;
     } catch (err) {
       console.error(err);
+    } finally {
+      loading.value = false
     }
   };
-  const editProfile = async (
-    fName: string | null,
-    lName: string | null,
-    uName: string | null
-  ) => {
+  const editProfile = async ( fName: string | null, lName: string | null, uName: string | null ) => {
     const body = { firstName: fName, lastName: lName, username: uName };
     try {
       await fetch(

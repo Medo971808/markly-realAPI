@@ -6,7 +6,7 @@ useSeoMeta({
 import { Cropper } from "vue-advanced-cropper"
 import "vue-advanced-cropper/dist/style.css"
 
-const { user, uploadImage, editProfile } = useProfile()
+const { user, uploadImage, editProfile, loading } = useProfile()
 const { logout } = useAuth()
 const editButton = ref(false)
 const newFirstName = ref('')
@@ -109,6 +109,9 @@ const handleLogout = async () => {
                             <section class="bg-white rounded-lg shadow-lg w-11/12 h-5/6 flex flex-col">
                                 <cropper :src="imageSrc || '/face.jpeg'" :stencil-props="{ aspectRatio: 1 }"
                                     class="flex-1 bg-red-200 h-[80%]" @change="onCropChange" />
+                                <section v-if="loading" class="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+                                    <section class="w-16 h-16 border-4 border-dashed rounded-full border-[#AE9B84] animate-spin"></section>
+                                </section>
                                 <section class="p-4 flex justify-end gap-2 border-t">
                                     <button class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" @click="cancelCrop">
                                         Cancel

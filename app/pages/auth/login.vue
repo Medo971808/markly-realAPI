@@ -6,10 +6,13 @@ useSeoMeta({
 definePageMeta({
     layout: 'auth'
 })
-const { login, error, loading, forgotPassword, signInWithGoogle } = useAuth()
+const { login, error, loading, forgotPassword, signInWithGoogle, refresh } = useAuth()
 const { user, getUser } = useProfile()
 
-if (user.value) navigateTo('/')
+watchEffect( async () => {
+    await getUser()
+    if (user.value) navigateTo('/')
+})
 
 const email = ref('')
 const password = ref('')
@@ -69,7 +72,6 @@ const handleForgetPassword = async () => {
         </section>
         <section v-if="loading" class="flex flex-col justify-center items-center py-5">
             <section class="w-16 h-16 border-4 border-dashed rounded-full border-[#AE9B84] animate-spin"></section>
-            <p class="mt-5 text-xl text-[#AE9B84] font-semibold">Loading...</p>
         </section>
         <p v-if="error" class="text-red-500 mt-3">{{ error }}</p>
         <p v-else class="text-green-500 mt-3">{{ forgetPassword }}</p>
