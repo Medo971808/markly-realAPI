@@ -63,7 +63,7 @@ export const useProfile = () => {
   ) => {
     const body = { firstName: fName, lastName: lName, username: uName };
     try {
-      const res = await fetch(
+      await fetch(
         "https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/edit",
         {
           method: "PUT",
@@ -74,12 +74,6 @@ export const useProfile = () => {
           },
         }
       );
-      if (!res.ok) {
-        const text = await res.text();
-        console.error("Error response:", text);
-      }
-      const data = await res.json();
-      console.log(data);
     } catch (err: any) {
       error.value = err?.message ?? "Unknown error";
       console.error("Edit profile failed:", err);

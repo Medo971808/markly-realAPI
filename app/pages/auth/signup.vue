@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { GoogleLogin } from 'vue3-google-login'
+
 useSeoMeta({
     title: 'Sign up',
 })
@@ -12,10 +14,10 @@ const uname = ref('')
 const email = ref('')
 const password = ref('')
 
-const { error, register, loading } = useAuth()
+const { error, register, loading, signInWithGoogle } = useAuth()
 const { getUser } = useProfile()
 
-const handleEmailSignup = async () => {
+const handleRegister = async () => {
   if (!fName.value || !lName.value || !uname.value || !email.value || !password.value) {
     alert('Please fill all fields')
     return
@@ -28,16 +30,16 @@ const handleEmailSignup = async () => {
   password.value = ''
 
   if(!error.value) {
-      navigateTo('/profile')
+      navigateTo('/')
       await getUser()
   }
 }
 
-// const handleGoogleSignup = async () => {
-// }
-
-
-
+const handleGoogleLogin = async (response: any) => {
+    await signInWithGoogle(response)
+    await getUser()
+    navigateTo('/')
+}
 </script>
 
 <template>
@@ -61,17 +63,17 @@ const handleEmailSignup = async () => {
             placeholder="Password" />
 
         <section class="flex justify-between items-center mb-5">
-            <button class="bg-[#DB4444] w-full h-12 rounded-lg hover:bg-[#DB5555]" @click="handleEmailSignup"
+            <button class="bg-purple-700 w-full h-12 rounded-lg hover:bg-purple-600" @click="handleRegister"
                 :disabled="loading">
                 Create Account
             </button>
         </section>
-        <!-- <button :disabled="loading"
-            class="flex items-center justify-center h-12 gap-2 px-4 py-2 bg-[#1A1A1A] border rounded-lg shadow w-full hover:bg-gray-800 transition"
-            @click="handleGoogleSignup">
-            <FontAwesomeIcon :icon="['fab', 'google']" class="text-2xl transition-colors" />
-            Sign up with Google
-        </button> -->
+        <p class="text-center mb-2">or</p>
+        <section class="flex flex-col items-center justify-center">
+            <ClientOnly>
+                <GoogleLogin :callback="handleGoogleLogin" :buttonConfig="{ text: 'signup_with', width: 300 }" />
+            </ClientOnly>
+        </section>
         <section class="flex justify-center items-center mt-2 ">
             <p class="text-center">Already have account?</p>
             <NuxtLink to="/auth/login" class=" underline ml-3">Log In</NuxtLink>

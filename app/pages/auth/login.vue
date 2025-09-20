@@ -9,9 +9,7 @@ definePageMeta({
 const { login, error, loading, forgotPassword, signInWithGoogle } = useAuth()
 const { user, getUser } = useProfile()
 
-watchEffect(() => {
-    if (user.value) navigateTo('/profile')
-})
+if (user.value) navigateTo('/')
 
 const email = ref('')
 const password = ref('')
@@ -20,13 +18,13 @@ const forgetPassword = ref('')
 const handleLogin = async () => {
     await login(email.value, password.value)
     await getUser()
-    navigateTo('/profile')
+    navigateTo('/')
 }
 
 const handleGoogleLogin = async (response: any) => {
     await signInWithGoogle(response)
     await getUser()
-    navigateTo('/profile')
+    navigateTo('/')
 }
 
 const handleForgetPassword = async () => {

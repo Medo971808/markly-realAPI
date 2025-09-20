@@ -161,7 +161,7 @@ const handleLogout = async () => {
                     </section>
                 </section>
                 <button @click="editButton = !editButton"
-                    class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 py-3 rounded-xl transition font-semibold shadow-lg">
+                    class="w-full text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 py-3 rounded-xl transition font-semibold shadow-lg">
                     Edit Profile
                 </button>
             </section>
