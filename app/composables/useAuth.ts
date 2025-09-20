@@ -127,25 +127,6 @@ export const useAuth = () => {
     }
   }
 
-  const uploadImage = async (file: File) => {
-    const formData = new FormData()
-    formData.append("file", file)
-
-    try {
-      const res = await fetch("https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/update-image", {
-        method: "PATCH",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-        },
-      })
-      const data = await res.json()
-      return data
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
   const logout = async () => {
     const refreshToken = authStore.refreshToken
     try {
@@ -162,5 +143,5 @@ export const useAuth = () => {
       }
   }
 
-  return { loading, error, login, register, refresh, logout, forgotPassword, resetPassword, signInWithGoogle, uploadImage }
+  return { loading, error, login, register, refresh, logout, forgotPassword, resetPassword, signInWithGoogle }
 }

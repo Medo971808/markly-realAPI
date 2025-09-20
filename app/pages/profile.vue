@@ -6,8 +6,8 @@ useSeoMeta({
 import { Cropper } from "vue-advanced-cropper"
 import "vue-advanced-cropper/dist/style.css"
 
-const { user } = useProfile()
-const { uploadImage, logout } = useAuth()
+const { user, uploadImage, editProfile } = useProfile()
+const { logout } = useAuth()
 const editButton = ref(false)
 const newFirstName = ref('')
 const newLastName = ref('')
@@ -16,17 +16,22 @@ const newUserName = ref('')
 if (!user.value) navigateTo('/auth/login')
 
 const updateNameAndPhoto = async () => {
-    if (!user.value) return
-
     const firstName = newFirstName.value.trim() !== "" ? newFirstName.value.trim() : null
     const lastName = newLastName.value.trim() !== "" ? newLastName.value.trim() : null
     const userName = newUserName.value.trim() !== "" ? newUserName.value.trim() : null
 
     user.value.firstName = firstName || user.value.firstName
     user.value.lastName = lastName || user.value.lastName
-    user.value.username = userName || user.value.username
+    user.value.username = userName || user.value.userName
 
     editButton.value = false
+    newFirstName.value = ''
+    newLastName.value = ''
+    newUserName.value = ''
+
+    if (user.value.firstName || user.value.lastName || user.value.username)
+        await editProfile(user.value.firstName, user.value.lastName, user.value.username)
+
 }
 
 const imageSrc = ref<string | null>(null)
@@ -102,8 +107,8 @@ const handleLogout = async () => {
                         <section v-if="imageSrc"
                             class="fixed inset-0 bg-black backdrop-blur-sm flex items-center justify-center z-50">
                             <section class="bg-white rounded-lg shadow-lg w-11/12 h-5/6 flex flex-col">
-                                <cropper :src="imageSrc || '/face.jpeg'" :stencil-props="{ aspectRatio: 1 }" class="flex-1 bg-red-200 h-[80%]"
-                                    @change="onCropChange" />
+                                <cropper :src="imageSrc || '/face.jpeg'" :stencil-props="{ aspectRatio: 1 }"
+                                    class="flex-1 bg-red-200 h-[80%]" @change="onCropChange" />
                                 <section class="p-4 flex justify-end gap-2 border-t">
                                     <button class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" @click="cancelCrop">
                                         Cancel
@@ -141,13 +146,13 @@ const handleLogout = async () => {
                     </p>
                     <section v-if="editButton" class="bg-[#1A1A1A] rounded-xl shadow-md mt-4 mb-8 md:mb-0">
                         <input type="text" v-model="newFirstName"
-                            class="h-10 block mb-3 w-full bg-gray-900 text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            class="h-10 block mb-3 w-full bg-black text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Enter new first name" />
                         <input type="text" v-model="newLastName"
-                            class="h-10 block mb-3 w-full bg-gray-900 text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            class="h-10 block mb-3 w-full bg-black text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Enter new last name" />
                         <input type="text" v-model="newUserName"
-                            class="h-10 block mb-3 w-full bg-gray-900 text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            class="h-10 block mb-3 w-full bg-black text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Enter new username" />
                         <button @click="updateNameAndPhoto"
                             class="px-5 h-10 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-md transition">
