@@ -68,8 +68,8 @@ const handleResendOtp = async () => {
             <input type="submit" value="Submit" class="text-center bg-blue-500 mt-2 w-20 h-8 rounded-lg" />
 
             <section class="mt-3">
-                <button type="button" class="text-blue-400 underline" :disabled="countdown > 0" @click="handleResendOtp">Resend OTP</button>
-                <p v-if="countdown > 0" class="text-sm text-gray-400 mt-1">
+                <button type="button" :class="countdown <= 0 ? 'text-blue-400 underline' : 'text-gray-600 underline'" :disabled="countdown > 0" @click="handleResendOtp">Resend OTP</button>
+                <p v-if="countdown > 0" class="text-sm text-white mt-1">
                     You can resend after 0{{ Math.floor(countdown / 60) }}: {{ (countdown % 60).toString().padStart(2, '0') }}</p>
             </section>
 
