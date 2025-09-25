@@ -8,8 +8,8 @@ const { getUser } = useProfile()
 onMounted(async () => {
     if (!authStore.accessToken || !useCookie('accessToken').value) {
         await refresh()
-        await getUser()
     }
+    if(useCookie('accessToken').value) await getUser()
 })
 </script>
 

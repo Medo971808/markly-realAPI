@@ -14,14 +14,17 @@ export const useAuth = () => {
     loading.value = true
     error.value = ''
     try {
-      $fetch(
+      const user: any = await $fetch(
         'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/login', {
           method: 'POST',
           body: { email, password },
         }
       )
+      if(user.message === 'User Signed In Successfully!') authStore.setTokens(user.accessToken, user.refreshToken, user)
+      if(user.message === 'Email or Password is invalid!') error.value = user.message
+      return user
     } catch (err: any) {
-      error.value = err?.data?.message || 'Login failed'
+      error.value = err.response._data || 'Login failed'
     } finally {
       loading.value = false
     }
@@ -146,12 +149,12 @@ export const useAuth = () => {
   const send_otp = async (email: string) => {
     try {
       loading.value = true
-      await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/send_otp', {
+      await $fetch(`https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/send-otp`, {
         method: 'POST',
-        body: { email },
+        params: { email }
       })
-    } catch (err) {
-      error.value = 'Something Wrong'
+    } catch (err: any) {
+      error.value = err.message || 'Cannot send otp'
       console.error('Something Wrong', err)
     } finally {
       loading.value = false
@@ -164,7 +167,6 @@ export const useAuth = () => {
         method: 'POST',
         body: { email, code: otp },
       })
-      console.log(user)
       authStore.setTokens(user.accessToken, user.refreshToken, user)
     } catch (err :any) {
       error.value = err.response._data || 'Something Wrong'

@@ -30,7 +30,7 @@ watchEffect(async () => {
     }
 })
 
-const handleRegister = handleSubmit(async () => {
+const handleRegister = async () => {
     if (!fName.value || !lName.value || !uname.value || !email.value || !password.value) {
         alert('Please fill all fields')
         return
@@ -38,10 +38,10 @@ const handleRegister = handleSubmit(async () => {
     await register(fName.value, lName.value, uname.value, email.value, password.value)
     
     if (!error.value) {
-        navigateTo(`/otp?email=${email.value}`)
         await send_otp(email.value)
+        navigateTo(`/otp?email=${email.value}`)
     }
-})
+}
 
 const handleGoogleLogin = async (response: any) => {
     await signInWithGoogle(response)

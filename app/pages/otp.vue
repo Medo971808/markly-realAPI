@@ -21,14 +21,14 @@ watchEffect(async () => {
     }
 })
 
-const handleSubmitOTP = handleSubmit(async () => {
+const handleSubmitOTP = async () => {
     await confirm_email(email as string, otp.value)
 
     if (!error.value) {
         await getUser()
         navigateTo('/')
     }
-})
+}
 
 const countdown = ref(0)
 let timer: NodeJS.Timeout | null = null

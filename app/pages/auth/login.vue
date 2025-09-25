@@ -7,7 +7,7 @@ useSeoMeta({
 definePageMeta({
     layout: 'auth'
 })
-const { login, error, loading, forgotPassword, signInWithGoogle } = useAuth()
+const { login, error, loading, forgotPassword, signInWithGoogle, send_otp } = useAuth()
 const { user, getUser } = useProfile()
 
 watchEffect(async () => {
@@ -26,14 +26,19 @@ const { value: password, errorMessage: passwordError } = useField<string>('passw
 
 const forgetPassword = ref('')
 
-const handleLogin = handleSubmit(async () => {
-    await login(email.value, password.value)
+const handleLogin = async () => {
+    const u = await login(email.value, password.value)
 
-    if (!error.value) {
+    if (!error.value && u.message === 'User Signed In Successfully!') {
         await getUser()
         navigateTo('/')
     }
-})
+
+    else if (!user.value) {
+        await send_otp(email.value)
+        navigateTo(`/otp?email=${email.value}`)
+    }
+}
 
 const handleGoogleLogin = async (response: any) => {
     await signInWithGoogle(response)
@@ -61,7 +66,7 @@ const handleForgetPassword = async () => {
         <p class="text-red-500 mb-5">{{ passwordError }}</p>
 
         <section class="flex justify-between items-center mb-5">
-            <button class="bg-purple-700 w-28 h-12 rounded-lg hover:bg-purple-600" @click="handleLogin"
+            <button class="bg-purple-700 w-28 h-12 rounded-lg hover:bg-purple-600" @click.prevent="handleLogin"
                 :disabled="loading">
                 Log In
             </button>
