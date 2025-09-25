@@ -6,7 +6,9 @@ useSeoMeta({
     title: 'Dashboard',
 })
 
-const { data: users } = await useFetch("/api/users")
+const { users_count } = useAuth()
+const users = await users_count()
+console.log(users?.data)
 
 const { data } = useProducts()
 const products = computed(() => data.value)
@@ -31,7 +33,7 @@ const totalPrice = computed(() => {
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <section class="bg-blue-500 text-white rounded-2xl p-6 shadow">
                 <h2 class="text-lg font-semibold">Users</h2>
-                <p class="text-2xl font-bold mt-2">{{ users?.length }}</p>
+                <p class="text-2xl font-bold mt-2">{{ users?.data }}</p>
             </section>
 
             <section class="bg-green-500 text-white rounded-2xl p-6 shadow">

@@ -6,24 +6,24 @@ definePageMeta({
     layout: "dashboard",
 })
 
-interface User {
-    uid: string
-    displayName: string | null
-    email: string | null
-    photoURL: string | null
-    disabled: boolean
-}
+// interface User {
+//     uid: string
+//     displayName: string | null
+//     email: string | null
+//     photoURL: string | null
+//     disabled: boolean
+// }
 
-const { data: users, error, pending, refresh } = await useFetch<User[]>("/api/users")
+// const { data: users, error, pending, refresh } = await useFetch<User[]>("/api/users")
 
-const toggleUserDisabled = async (id: string) => {
-    await $fetch(`/api/users/${id}/disable`, { method: "POST" })
-    await refresh()
-}
+// const toggleUserDisabled = async (id: string) => {
+//     await $fetch(`/api/users/${id}/disable`, { method: "POST" })
+//     await refresh()
+// }
 </script>
 
 <template>
-    <section class="space-y-6">
+    <!-- <section class="space-y-6">
         <section class="flex items-center justify-between">
             <h1 class="text-2xl font-bold">Users</h1>
         </section>
@@ -77,5 +77,5 @@ const toggleUserDisabled = async (id: string) => {
                 </button>
             </div>
         </section>
-    </section>
+    </section> -->
 </template>

@@ -175,6 +175,22 @@ export const useAuth = () => {
       loading.value = false
     }
   }
+  const users_count = async () => {
+    try {
+      loading.value = true
+      const users = await useAsyncData('getAllUsers',async () => 
+        await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/users-count', {
+        method: 'POST'
+        })
+      )
+      return users
+    } catch (err :any) {
+      error.value = err.response._data || 'Something Wrong'
+      console.error('Something Wrong', err)
+    } finally {
+      loading.value = false
+    }
+  }
 
-  return { loading, error, login, register, refresh, logout, forgotPassword, resetPassword, signInWithGoogle, send_otp, confirm_email }
+  return { loading, error, login, register, refresh, logout, forgotPassword, resetPassword, signInWithGoogle, send_otp, confirm_email, users_count }
 }
