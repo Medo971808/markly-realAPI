@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 interface AuthState {
     accessToken: string | null,
     refreshToken: string | null | undefined,
-    user: object
+    user: any
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -18,9 +18,8 @@ export const useAuthStore = defineStore('auth', {
             this.refreshToken = refreshToken
             this.user = user
 
-            // Persistent cookies
-            const RTCookie = useCookie('refreshToken', { path: '/', maxAge: 60 * 60 * 24 * 7 }) // 7 أيام
-            const ATCookie = useCookie('accessToken', { path: '/', maxAge: 60 * 60 }) // 1 ساعة مثلاً
+            const RTCookie = useCookie('refreshToken', { path: '/', maxAge: 60 * 60 * 24 * 7 })
+            const ATCookie = useCookie('accessToken', { path: '/', maxAge: 60 * 5 })
             RTCookie.value = refreshToken
             ATCookie.value = accessToken
         },

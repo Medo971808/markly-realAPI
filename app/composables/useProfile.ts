@@ -1,4 +1,3 @@
-import { useAuth } from "./useAuth";
 import { useAuthStore } from "../store/auth";
 
 export const useProfile = () => {
@@ -24,6 +23,7 @@ export const useProfile = () => {
             "https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/profile",
             { headers: { Authorization: `Bearer ${newAccessToken}` } }
           );
+          authStore.accessToken = newAccessToken
         } else {
           error.value = "Unauthorized - session expired";
         }

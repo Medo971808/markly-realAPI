@@ -63,7 +63,7 @@ const checkout = async () => {
         Checkout
       </h1>
       <section class="flex flex-col md:flex-row items-center gap-6 mb-10">
-        <img :src="user.photoURL || '/face.jpg'" alt="" v-if="user" class="rounded-full w-12 h-12 cursor-pointer">
+        <img :src="user.imageUrl || '/face.jpeg'" alt="" v-if="user" class="rounded-full w-12 h-12 cursor-pointer">
         <section class="text-center md:text-left">
           <p class="text-xl font-semibold">{{ `${user.firstName} ${user.lastName}` }}</p>
           <p class="text-gray-400 text-sm">{{ user.email }}</p>

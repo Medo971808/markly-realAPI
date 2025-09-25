@@ -22,15 +22,15 @@ const updateNameAndPhoto = async () => {
 
     user.value.firstName = firstName || user.value.firstName
     user.value.lastName = lastName || user.value.lastName
-    user.value.username = userName || user.value.userName
+    user.value.userName = userName || user.value.userName
 
     editButton.value = false
     newFirstName.value = ''
     newLastName.value = ''
     newUserName.value = ''
 
-    if (user.value.firstName || user.value.lastName || user.value.username)
-        await editProfile(user.value.firstName, user.value.lastName, user.value.username)
+    if (user.value.firstName || user.value.lastName || user.value.userName)
+        await editProfile(user.value.firstName, user.value.lastName, user.value.userName)
 
 }
 

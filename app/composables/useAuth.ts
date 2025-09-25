@@ -14,13 +14,12 @@ export const useAuth = () => {
     loading.value = true
     error.value = ''
     try {
-      const user = await $fetch<AuthResponse>(
+      $fetch(
         'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/login', {
           method: 'POST',
           body: { email, password },
         }
       )
-      authStore.setTokens(user.accessToken, user.refreshToken, user)
     } catch (err: any) {
       error.value = err?.data?.message || 'Login failed'
     } finally {
@@ -34,13 +33,12 @@ export const useAuth = () => {
     try {
       const body = { firstName: fName, lastName: lName, username: uName, email, password }
 
-      const user = await $fetch<AuthResponse>(
+      await $fetch(
         'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/register', {
           method: 'POST',
           body,
         }
       )
-      authStore.setTokens(user.accessToken, user.refreshToken, user)
     } catch (err: any) {
       error.value = err?.data?.message || 'Register failed'
     } finally {
@@ -130,18 +128,51 @@ export const useAuth = () => {
   const logout = async () => {
     const refreshToken = authStore.refreshToken
     try {
-        await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/logout', {
-          method: 'POST',
-          body: { refreshToken },
-          headers: {
-            Authorization: `Bearer ${authStore.accessToken}`
-          }
-        })
-        authStore.clearTokens()
-      } catch (err) {
-        console.error('Something Wrong', err)
-      }
+      loading.value = true
+      await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/logout', {
+        method: 'POST',
+        body: { refreshToken },
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`
+        }
+      })
+      authStore.clearTokens()
+    } catch (err) {
+      console.error('Something Wrong', err)
+    } finally {
+      loading.value = false
+    }
+  }
+  const send_otp = async (email: string) => {
+    try {
+      loading.value = true
+      await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/send_otp', {
+        method: 'POST',
+        body: { email },
+      })
+    } catch (err) {
+      error.value = 'Something Wrong'
+      console.error('Something Wrong', err)
+    } finally {
+      loading.value = false
+    }
+  }
+  const confirm_email = async (email: string, otp: string) => {
+    try {
+      loading.value = true
+      const user = await $fetch<AuthResponse>('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/confirm-email', {
+        method: 'POST',
+        body: { email, code: otp },
+      })
+      console.log(user)
+      authStore.setTokens(user.accessToken, user.refreshToken, user)
+    } catch (err :any) {
+      error.value = err.response._data || 'Something Wrong'
+      console.error('Something Wrong', err)
+    } finally {
+      loading.value = false
+    }
   }
 
-  return { loading, error, login, register, refresh, logout, forgotPassword, resetPassword, signInWithGoogle }
+  return { loading, error, login, register, refresh, logout, forgotPassword, resetPassword, signInWithGoogle, send_otp, confirm_email }
 }
