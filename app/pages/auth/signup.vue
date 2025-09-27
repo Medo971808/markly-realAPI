@@ -38,7 +38,6 @@ const handleRegister = async () => {
     await register(fName.value, lName.value, uname.value, email.value, password.value)
     
     if (!error.value) {
-        await send_otp(email.value)
         navigateTo(`/otp?email=${email.value}`)
     }
 }

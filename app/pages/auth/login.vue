@@ -35,7 +35,6 @@ const handleLogin = async () => {
     }
 
     else if (!user.value) {
-        await send_otp(email.value)
         navigateTo(`/otp?email=${email.value}`)
     }
 }
