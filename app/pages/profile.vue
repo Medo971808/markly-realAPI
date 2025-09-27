@@ -9,13 +9,17 @@ import "vue-advanced-cropper/dist/style.css"
 const { user, uploadImage, editProfile, loading } = useProfile()
 const { logout } = useAuth()
 const editButton = ref(false)
-const newFirstName = ref('')
-const newLastName = ref('')
-const newUserName = ref('')
+const { schema } = useValidationSchema()
+const { handleSubmit } = useForm({
+    validationSchema: schema,
+})
+const { value: newFirstName, errorMessage: newFirstNameError } = useField<string>('newFirstName')
+const { value: newLastName, errorMessage: newLastNameError } = useField<string>('newLastName')
+const { value: newUserName, errorMessage: newUserNameError } = useField<string>('newUsername')
 
 if (!user.value) navigateTo('/auth/login')
 
-const updateNameAndPhoto = async () => {
+const updateUserInfo = async () => {
     const firstName = newFirstName.value.trim() !== "" ? newFirstName.value.trim() : null
     const lastName = newLastName.value.trim() !== "" ? newLastName.value.trim() : null
     const userName = newUserName.value.trim() !== "" ? newUserName.value.trim() : null
@@ -107,8 +111,8 @@ const handleLogout = async () => {
                         <section v-if="imageSrc"
                             class="fixed inset-0 bg-black backdrop-blur-sm flex items-center justify-center z-50">
                             <section class="bg-white rounded-lg shadow-lg w-11/12 h-5/6 flex flex-col">
-                                <cropper :src="imageSrc || '/face.jpeg'" :stencil-props="{ aspectRatio: 1 }"
-                                    class="flex-1 bg-red-200 h-[80%]" @change="onCropChange" />
+                                <cropper :src="imageSrc" :stencil-props="{ aspectRatio: 1 }"
+                                    class="flex-1 bg-black h-[80%] w-auto" @change="onCropChange" />
                                 <section v-if="loading" class="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
                                     <section class="w-16 h-16 border-4 border-dashed rounded-full border-[#AE9B84] animate-spin"></section>
                                 </section>
@@ -147,21 +151,25 @@ const handleLogout = async () => {
                     <p class="text-gray-400 text-sm mb-6">
                         Update your profile information and manage your account settings.
                     </p>
-                    <section v-if="editButton" class="bg-[#1A1A1A] rounded-xl shadow-md mt-4 mb-8 md:mb-0">
+                    <form v-if="editButton" class="bg-[#1A1A1A] mt-4 mb-8 md:mb-0" @submit.prevent="updateUserInfo">
                         <input type="text" v-model="newFirstName"
-                            class="h-10 block mb-3 w-full bg-black text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            class="h-10 block w-full bg-black text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Enter new first name" />
+                        <p class="text-red-500 mb-3">{{ newFirstNameError }}</p>
                         <input type="text" v-model="newLastName"
-                            class="h-10 block mb-3 w-full bg-black text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Enter new last name" />
+                        class="h-10 block w-full bg-black text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Enter new last name" />
+                        <p class="text-red-500 mb-3">{{ newLastNameError }}</p>
                         <input type="text" v-model="newUserName"
-                            class="h-10 block mb-3 w-full bg-black text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Enter new username" />
-                        <button @click="updateNameAndPhoto"
-                            class="px-5 h-10 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-md transition">
-                            Done
-                        </button>
-                    </section>
+                        class="h-10 block w-full bg-black text-white px-4 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Enter new username" />
+                        <p class="text-red-500 mb-3">{{ newUserNameError }}</p>
+                        <div class="flex justify-center">
+                            <button class="px-5 h-10 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-md transition">
+                                Done
+                            </button>
+                        </div>
+                    </form>
                 </section>
                 <button @click="editButton = !editButton"
                     class="w-full text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 py-3 rounded-xl transition font-semibold shadow-lg">
