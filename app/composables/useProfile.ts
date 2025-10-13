@@ -12,7 +12,7 @@ export const useProfile = () => {
     error.value = null;
     try {
       user.value = await $fetch(
-        "https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/profile",
+        "http://ecoommerce.runasp.net/api/Account/profile",
         { headers: { Authorization: `Bearer ${authStore.accessToken}` } }
       );
     } catch (err: any) {
@@ -20,7 +20,7 @@ export const useProfile = () => {
         const newAccessToken = await refresh();
         if (newAccessToken) {
           user.value = await $fetch(
-            "https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/profile",
+            "http://ecoommerce.runasp.net/api/Account/profile",
             { headers: { Authorization: `Bearer ${newAccessToken}` } }
           );
           authStore.accessToken = newAccessToken
@@ -41,7 +41,7 @@ export const useProfile = () => {
     try {
       loading.value = true
       const res = await fetch(
-        "https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/update-image",
+        "http://ecoommerce.runasp.net/api/Account/update-image",
         {
           method: "PATCH",
           body: formData,
@@ -62,7 +62,7 @@ export const useProfile = () => {
     const body = { firstName: fName, lastName: lName, username: uName };
     try {
       await fetch(
-        "https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/edit",
+        "http://ecoommerce.runasp.net/api/Account/edit",
         {
           method: "PUT",
           body: JSON.stringify(body),

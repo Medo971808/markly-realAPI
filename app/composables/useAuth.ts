@@ -15,7 +15,7 @@ export const useAuth = () => {
     error.value = ''
     try {
       const user: any = await $fetch(
-        'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/login', {
+        'http://ecoommerce.runasp.net/api/Account/login', {
           method: 'POST',
           body: { email, password },
         }
@@ -37,7 +37,7 @@ export const useAuth = () => {
       const body = { firstName: fName, lastName: lName, username: uName, email, password }
 
       await $fetch(
-        'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/register', {
+        'http://ecoommerce.runasp.net/api/Account/register', {
           method: 'POST',
           body,
         }
@@ -56,7 +56,7 @@ export const useAuth = () => {
     const idToken = response.credential
     try {
       const user = await $fetch<AuthResponse>(
-        'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/signin-google', {
+        'http://ecoommerce.runasp.net/api/Account/signin-google', {
         method: 'POST',
         body: { idToken }
       })
@@ -75,7 +75,7 @@ export const useAuth = () => {
     if (!rt) return null
     try {
       const { accessToken: at, refreshToken } = await $fetch<AuthResponse>(
-        'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/refresh-token',
+        'http://ecoommerce.runasp.net/api/Account/refresh-token',
         { method: 'POST', body: { refreshToken: rt } }
       )
       authStore.refreshTokens(at, refreshToken)
@@ -90,7 +90,7 @@ export const useAuth = () => {
     error.value = ''
     try {
       const result = await $fetch(
-        'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/forgot-password', {
+        'http://ecoommerce.runasp.net/api/Account/forgot-password', {
           method: 'POST',
           body: {
             email,
@@ -116,7 +116,7 @@ export const useAuth = () => {
     }
     try {
       await $fetch(
-        'https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/reset-password', {
+        'http://ecoommerce.runasp.net/api/Account/reset-password', {
           method: 'POST',
           body,
         }
@@ -132,7 +132,7 @@ export const useAuth = () => {
     const refreshToken = authStore.refreshToken
     try {
       loading.value = true
-      await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/logout', {
+      await $fetch('http://ecoommerce.runasp.net/api/Account/logout', {
         method: 'POST',
         body: { refreshToken },
         headers: {
@@ -149,7 +149,7 @@ export const useAuth = () => {
   const send_otp = async (email: string) => {
     try {
       loading.value = true
-      await $fetch(`https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/send-otp`, {
+      await $fetch(`http://ecoommerce.runasp.net/api/Account/send-otp`, {
         method: 'POST',
         params: { email }
       })
@@ -163,7 +163,7 @@ export const useAuth = () => {
   const confirm_email = async (email: string, otp: string) => {
     try {
       loading.value = true
-      const user = await $fetch<AuthResponse>('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/confirm-email', {
+      const user = await $fetch<AuthResponse>('http://ecoommerce.runasp.net/api/Account/confirm-email', {
         method: 'POST',
         body: { email, code: otp },
       })
@@ -179,7 +179,7 @@ export const useAuth = () => {
     try {
       loading.value = true
       const users = await useAsyncData('getAllUsers',async () => 
-        await $fetch('https://ecoommerce-api-bxbhfsgua6bmbxh6.canadacentral-01.azurewebsites.net/api/Account/users-count', {
+        await $fetch('http://ecoommerce.runasp.net/api/Account/users-count', {
         method: 'POST'
         })
       )
