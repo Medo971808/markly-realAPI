@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { GoogleLogin } from 'vue3-google-login'
+import { useForm, useField } from 'vee-validate'
 
 useSeoMeta({
     title: 'Log in',
@@ -7,7 +8,8 @@ useSeoMeta({
 definePageMeta({
     layout: 'auth'
 })
-const { login, error, loading, forgotPassword, signInWithGoogle, send_otp } = useAuth()
+
+const { login, error, loading, forgotPassword, signInWithGoogle } = useAuth()
 const { user, getUser } = useProfile()
 
 watchEffect(async () => {
@@ -17,27 +19,28 @@ watchEffect(async () => {
     }
 })
 
-const { schema } = useValidationSchema()
+const { loginSchema } = useValidationSchema()
+
 const { handleSubmit } = useForm({
-    validationSchema: schema,
+    validationSchema: loginSchema,
 })
+
 const { value: email, errorMessage: emailError } = useField<string>('email')
 const { value: password, errorMessage: passwordError } = useField<string>('password')
 
 const forgetPassword = ref('')
 
-const handleLogin = async () => {
+const onSubmit = handleSubmit(async () => {
+    console.log('OK')
     const u = await login(email.value, password.value)
 
     if (!error.value && u.message === 'User Signed In Successfully!') {
         await getUser()
         navigateTo('/')
-    }
-
-    else if (!user.value) {
+    } else if (!user.value) {
         navigateTo(`/otp?email=${email.value}`)
     }
-}
+})
 
 const handleGoogleLogin = async (response: any) => {
     await signInWithGoogle(response)
@@ -55,24 +58,27 @@ const handleForgetPassword = async () => {
 }
 </script>
 
+
 <template>
     <section class="mt-5 md:mt-0">
-        <h1 class="text-3xl md:tracking-widest">Log in to Markly</h1>
-        <p class="md:mt-2 mt-3 mb-5">Enter your details below</p>
-        <v-text-field type="email" hide-details="auto" label="Email" v-model="email"></v-text-field>
-        <p class="text-red-500 mb-5">{{ emailError }}</p>
-        <v-text-field type="password" hide-details="auto" label="Password" v-model="password"></v-text-field>
-        <p class="text-red-500 mb-5">{{ passwordError }}</p>
+        <form @submit.prevent="onSubmit">
+            <h1 class="text-3xl md:tracking-widest">Log in to Markly</h1>
+            <p class="md:mt-2 mt-3 mb-5">Enter your details below</p>
+            <v-text-field type="email" hide-details="auto" label="Email" v-model="email"></v-text-field>
+            <p class="text-red-500 mb-5">{{ emailError }}</p>
+            <v-text-field type="password" hide-details="auto" label="Password" v-model="password"></v-text-field>
+            <p class="text-red-500 mb-5">{{ passwordError }}</p>
 
-        <section class="flex justify-between items-center mb-5">
-            <button class="bg-purple-700 w-28 h-12 rounded-lg hover:bg-purple-600" @click.prevent="handleLogin"
-                :disabled="loading">
-                Log In
-            </button>
-            <button class="text-[#DB4444]" @click.prevent="handleForgetPassword">
-                Forget Password?
-            </button>
-        </section>
+            <section class="flex justify-between items-center mb-5">
+                <button class="bg-purple-700 w-28 h-12 rounded-lg hover:bg-purple-600" type="submit"
+                    :disabled="loading">
+                    Log In
+                </button>
+                <button class="text-[#DB4444]" @click.prevent="handleForgetPassword">
+                    Forget Password?
+                </button>
+            </section>
+        </form>
         <p class="text-center mb-2">or</p>
         <section class="flex flex-col items-center justify-center text-black">
             <ClientOnly>

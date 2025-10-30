@@ -5,9 +5,9 @@ useSeoMeta({
 const route = useRoute()
 const email = route.query.email
 
-const { schema } = useValidationSchema()
+const { otpSchema } = useValidationSchema()
 const { handleSubmit } = useForm({
-    validationSchema: schema
+    validationSchema: otpSchema
 })
 const { value: otp, errorMessage: otpError } = useField<string>('otp')
 
@@ -21,14 +21,14 @@ watchEffect(async () => {
     }
 })
 
-const handleSubmitOTP = async () => {
+const handleSubmitOTP = handleSubmit(async () => {
     await confirm_email(email as string, otp.value)
 
     if (!error.value) {
         await getUser()
         navigateTo('/')
     }
-}
+})
 
 const countdown = ref(0)
 let timer: NodeJS.Timeout | null = null

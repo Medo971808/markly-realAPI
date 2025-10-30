@@ -154,8 +154,9 @@ export const useAuth = () => {
         params: { email }
       })
     } catch (err: any) {
-      error.value = err.message || 'Cannot send otp'
-      console.error('Something Wrong', err)
+      error.value = err.message
+      console.log(error.value)
+      console.error('Something Wrong', err.message)
     } finally {
       loading.value = false
     }
